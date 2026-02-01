@@ -70,7 +70,10 @@ builder.Services.AddScoped<Backend.Services.IEmailService, Backend.Services.Emai
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
-        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        builder => builder
+            .AllowAnyOrigin() // Allow any frontend to connect (Railway)
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
 var app = builder.Build();

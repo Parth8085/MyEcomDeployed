@@ -1,0 +1,5 @@
+[Email Simulator] Time: 01-02-2026 21:02:35
+TO: osontakke52@gmail.com
+SUBJECT: Reset Password OTP
+BODY: Your OTP is: <b>220060</b>
+--------------------------------------------------

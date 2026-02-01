@@ -111,48 +111,7 @@ const CategoryProducts = ({ categoryName }) => {
         }
     };
 
-    // Fetch wishlist items
-    const fetchWishlist = async () => {
-        if (!isAuthenticated) return;
-        try {
-            const response = await api.get('/wishlist');
-            const wishlistProductIds = new Set(response.data.items.map(item => item.productId));
-            setWishlistItems(wishlistProductIds);
-        } catch (error) {
-            console.error('Failed to fetch wishlist:', error);
-        }
-    };
 
-    // Toggle wishlist
-    const handleToggleWishlist = async (productId, e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (!isAuthenticated) {
-            alert("Please login to add to wishlist");
-            navigate('/login');
-            return;
-        }
-
-        const isInWishlist = wishlistItems.has(productId);
-
-        try {
-            if (isInWishlist) {
-                await api.delete(`/wishlist/remove/${productId}`);
-                setWishlistItems(prev => {
-                    const newSet = new Set(prev);
-                    newSet.delete(productId);
-                    return newSet;
-                });
-            } else {
-                await api.post(`/wishlist/add/${productId}`);
-                setWishlistItems(prev => new Set([...prev, productId]));
-            }
-        } catch (error) {
-            console.error('Failed to update wishlist:', error);
-            alert(error.response?.data || 'Failed to update wishlist');
-        }
-    };
 
     useEffect(() => {
         const fetchProducts = async () => {

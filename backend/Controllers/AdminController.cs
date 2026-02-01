@@ -125,7 +125,7 @@ namespace Backend.Controllers
                 .Include(o => o.User)
                 .Include(o => o.Items)
                 .ThenInclude(oi => oi.Product)
-                .ThenInclude(p => p.Brand)
+                .ThenInclude(p => p!.Brand)
                 .Include(o => o.Payment)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
@@ -229,7 +229,7 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<AdminProductDto>>> GetAllProducts(
             [FromQuery] string? category = null,
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 20)
+            [FromQuery] int pageSize = 1000)
         {
             var query = _context.Products
                 .Include(p => p.Category)

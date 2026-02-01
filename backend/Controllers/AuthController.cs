@@ -84,7 +84,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
-            if (user == null) return BadRequest("User not found."); // Or generic message for security
+            if (user == null) return BadRequest("User not found."); 
 
             var otp = new Random().Next(100000, 999999).ToString();
             user.Otp = otp;
@@ -94,9 +94,14 @@ namespace Backend.Controllers
             // Send Email
             try {
                 await _emailService.SendEmailAsync(user.Email, "Reset Password OTP", $"Your OTP is: <b>{otp}</b>");
-                return Ok(new { message = "OTP sent to email." }); // NO OTP in response!
+                return Ok(new { message = "OTP sent to your email address." });
             } catch (Exception ex) {
-                return Ok(new { message = "OTP generated but email failed (Simulated).", otp = otp, error = ex.Message });
+                // For development purposes, if SMTP fails, we might see the error in console, 
+                // but we should not return the OTP to the client if we want to force SMTP usage.
+                
+                // However, since the user might be testing without valid SMTP credentials yet:
+                // We will return the error message.
+                return StatusCode(500, new { message = "Failed to send email. Ensure SMTP is configured.", error = ex.Message });
             }
         }
 
@@ -122,10 +127,22 @@ namespace Backend.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto request)
         {
-            var user = _context.Users.Include("Role").FirstOrDefault(u => u.Email == request.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            Console.WriteLine($"[Login Attempt] Email: {request.Email}");
+
+            // Case-insensitive search
+            var user = _context.Users.Include("Role")
+                                     .FirstOrDefault(u => u.Email.ToLower() == request.Email.ToLower());
+
+            if (user == null)
             {
-                return BadRequest("Invalid email or password.");
+                Console.WriteLine("[Login Failed] User not found.");
+                return BadRequest("User not found.");
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            {
+                Console.WriteLine("[Login Failed] Incorrect password.");
+                return BadRequest("Incorrect password.");
             }
             
             // Optional: Block login if phone not verified? 

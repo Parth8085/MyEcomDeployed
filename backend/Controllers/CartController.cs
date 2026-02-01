@@ -33,7 +33,7 @@ namespace Backend.Controllers
             var cart = await _context.Carts
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Product)
-                .ThenInclude(p => p.Images) // Include images for display
+                .ThenInclude(p => p!.Images) // Include images for display
                 .FirstOrDefaultAsync(c => c.UserId == userId);
 
             if (cart == null)
@@ -141,7 +141,7 @@ namespace Backend.Controllers
             var cart = await _context.Carts
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Product) // Return full product details for UI updates
-                .ThenInclude(p => p.Images)
+                .ThenInclude(p => p!.Images)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
 
             if (cart == null) return NotFound("Cart not found");

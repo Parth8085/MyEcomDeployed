@@ -213,13 +213,32 @@ const Checkout = () => {
 
                                     <div>
                                         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>State *</label>
-                                        <input
-                                            type="text"
+                                        <select
                                             value={shippingState}
                                             onChange={(e) => setShippingState(e.target.value)}
-                                            placeholder="Maharashtra"
-                                            style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: `1px solid ${errors.shippingState ? 'red' : 'var(--border)'}` }}
-                                        />
+                                            style={{
+                                                width: '100%',
+                                                padding: '0.75rem',
+                                                borderRadius: '8px',
+                                                border: `1px solid ${errors.shippingState ? 'red' : 'var(--border)'}`,
+                                                background: 'var(--surface)',
+                                                color: 'var(--text)',
+                                                fontSize: '1rem',
+                                                appearance: 'none'
+                                            }}
+                                        >
+                                            <option value="">Select State</option>
+                                            {[
+                                                "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
+                                                "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
+                                                "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim",
+                                                "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+                                                "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+                                                "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+                                            ].map(state => (
+                                                <option key={state} value={state}>{state}</option>
+                                            ))}
+                                        </select>
                                         {errors.shippingState && <span style={{ color: 'red', fontSize: '0.85rem' }}>{errors.shippingState}</span>}
                                     </div>
                                 </div>

@@ -23,8 +23,8 @@ const Signup = () => {
         const newErrors = {};
         if (!name.trim()) newErrors.name = "Name is required";
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) newErrors.email = "Invalid email format";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+        if (!emailRegex.test(email)) newErrors.email = "Invalid email format. Must contain '@' and end with '.com'";
 
         if (!/^\d{10}$/.test(phoneNumber)) newErrors.phoneNumber = "Phone must be 10 digits";
 

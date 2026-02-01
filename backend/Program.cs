@@ -18,7 +18,26 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddHttpClient();
 
 // Database Context (MySQL)
+// Database Context (MySQL)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Auto-convert Railway URL (mysql://) to Connection String (Server=...)
+if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("mysql://"))
+{
+    try 
+    {
+        var uri = new Uri(connectionString);
+        var userInfo = uri.UserInfo.Split(':');
+        var password = userInfo.Length > 1 ? userInfo[1] : "";
+        connectionString = $"Server={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.Trim('/')};User={userInfo[0]};Password={password};";
+        Console.WriteLine("✅ Converted Railway URL to Connection String");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Failed to parse Railway URL: {ex.Message}");
+    }
+}
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
 

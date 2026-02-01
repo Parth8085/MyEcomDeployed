@@ -100,6 +100,10 @@ using (var scope = app.Services.CreateScope())
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         // Test connection
         await context.Database.CanConnectAsync();
+        
+        // Auto-create database tables
+        await context.Database.MigrateAsync();
+        Console.WriteLine("✅ Database migrations applied successfully.");
 
         var adminUser = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin@smartkartstore.com");
         
